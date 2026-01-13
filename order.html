@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Order Confirmation - Timalsina Masala</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .receipt {
+      max-width: 900px;
+      margin: 36px auto;
+      background: rgba(255,255,255,0.96);
+      padding: 24px;
+      border-radius: 10px;
+    }
+    .receipt h2 { margin-top:0; color:#3e7d16; }
+    .receipt .meta { color:#666; margin-bottom:12px; }
+    .receipt table { width:100%; border-collapse:collapse; margin-top:12px; }
+    .receipt th, .receipt td { text-align:left; padding:8px 6px; border-bottom:1px solid #eee; }
+    .receipt .total { text-align:right; font-size:1.1rem; font-weight:700; color:#b64323; }
+    .actions { margin-top:16px; display:flex; gap:8px; }
+    .btn { padding:8px 12px; border-radius:6px; border:none; cursor:pointer; }
+    .btn-print { background:#3e7d16; color:white; }
+    .btn-home { background:#b64323; color:white; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Timalsina <span>MASALA</span></div>
+    <nav>
+      <ul>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="index.html">Home</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="receipt" role="main" aria-live="polite">
+    <div id="content">
+      <h2>Order Confirmation</h2>
+      <div id="info">Loading order…</div>
+    </div>
+    <div class="actions" id="actions" style="display:none;">
+      <button class="btn btn-print" id="btn-print">Print Receipt</button>
+      <button class="btn btn-home" id="btn-shop">Continue Shopping</button>
+      <button class="btn" id="btn-clear" style="background:#777;color:white;">Clear Last Order</button>
+    </div>
+  </main>
+
+  <script>
+    function renderFromLocal(order) {
+      const info = document.getElementById('info');
+      if (!order) {
+        info.innerHTML = '<p>No order found. If you just placed an order go back to <a href="shop.html">shop</a>.</p>';
+        document.getElementById('actions').style.display = 'none';
+        return;
+      }
+      const created = new Date(order.created_at).toLocaleString();
+      const itemsHtml = (order.items || []).map(it => {
+        return `<tr><td>${it.name} × ${it.qty}</td><td style="text-align:right">$${(it.price*it.qty).toFixed(2)}</td></tr>`;
+      }).join('');
+      const html = `
+        <div><strong>Order ID:</strong> ${order.id}</div>
+        <div class="meta"><strong>Placed:</strong> ${created}</div>
+        <div class="meta"><strong>Customer:</strong> ${order.customer.fullname} — ${order.customer.email}</div>
+        <table aria-label="Order items">
+          <thead>
+            <tr><th>Item</th><th style="text-align:right">Amount</th></tr>
+          </thead>
+          <tbody>
+            ${itemsHtml}
+          </tbody>
+        </table>
+        <p class="total">Total: $${order.total}</p>
+      `;
+      info.innerHTML = html;
+      document.getElementById('actions').style.display = 'flex';
+    }
+
+    async function fetchServerOrder(id) {
+      try {
+        const resp = await fetch('/api/orders/' + encodeURIComponent(id));
+        if (!resp.ok) throw new Error('Not found');
+        const data = await resp.json();
+        return data;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    (async function init(){
+      let order = null;
+      try { order = JSON.parse(localStorage.getItem('lastOrder') || 'null'); } catch(e){}
+      // If we have an id and server is available, fetch authoritative version
+      if (order && order.id) {
+        const server = await fetchServerOrder(order.id);
+        if (server) {
+          order = server;
+        }
+      }
+      renderFromLocal(order);
+
+      document.getElementById('btn-print').addEventListener('click', () => window.print());
+      document.getElementById('btn-shop').addEventListener('click', () => window.location.href = 'shop.html');
+      document.getElementById('btn-clear').addEventListener('click', () => {
+        localStorage.removeItem('lastOrder');
+        document.getElementById('info').innerHTML = '<p>Last order cleared. <a href="shop.html">Start shopping</a>.</p>';
+        document.getElementById('actions').style.display = 'none';
+      });
+    })();
+  </script>
+</body>
+</html>

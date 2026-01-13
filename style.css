@@ -1,0 +1,195 @@
+/* style.css - updated with cart/checkout tweaks and responsive refinements */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #fff8f0;
+    color: #333;
+  }
+  
+  header {
+    background: linear-gradient(to right, #0c3f1b, #3e7d16);
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
+  
+  header .logo {
+    font-size: 2rem;
+    font-weight: bold;
+    font-family: 'Georgia', serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  header .logo::before {
+    content: "";
+    display: inline-block;
+    width: 39px;
+    height: 39px;
+    background-image: url('spice-icon.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 50%;
+  }
+  
+  header .logo span {
+    color: #f2c94c;
+  }
+  
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+  }
+  
+  nav ul li a {
+    text-decoration: none;
+    color: white;
+    font-weight: 500;
+    transition: color 0.3s;
+  }
+  
+  nav ul li a:hover {
+    text-decoration: underline;
+    color: #f2c94c;
+  }
+  
+  .hero {
+    background-image: url('wholespices.png');
+    background-size: cover;
+    background-position: fill;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    padding: 120px 20px;
+    text-align: center;
+    color: white;
+    position: relative;
+  }
+  
+  .hero::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+  }
+  
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 30px;
+    border-radius: 10px;
+    backdrop-filter: blur(4px);
+    max-width: 800px;
+    margin: auto;
+  }
+  
+  .hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: #f2c94c;
+    font-family: 'Georgia', serif;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+  }
+  
+  .hero p {
+    font-size: 1.1rem;
+    color: #fce9d4;
+  }
+  
+  section {
+    padding: 60px 20px;
+    max-width: 1000px;
+    margin: auto;
+    position: relative;
+  }
+  
+  section::after {
+    content: "";
+    display: block;
+    width: 80px;
+    height: 4px;
+    background-color: #3e7d16;
+    margin: 30px auto 0;
+    border-radius: 2px;
+  }
+  
+  #products .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+  }
+  
+  .product-card {
+    background-color: #f9f3e8;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-align: center;
+    font-family: 'Georgia', serif;
+  }
+  
+  .product-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  }
+  
+  .product-item {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.08);
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  
+  .product-item h3 { color: #b64323; font-size:1.2rem; margin:0; }
+  .product-item p { margin:8px 0; color:#666; }
+  
+  footer {
+    background-color: #0c3f1b;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+  }
+  
+  h2 {
+    color: #3e7d16;
+    text-align: center;
+    margin-bottom: 20px;
+    font-family: 'Georgia', serif;
+    font-size: 2rem;
+  }
+  
+  /* Checkout / cart container */
+  .checkout-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+  }
+  
+  /* Responsive */
+  @media screen and (max-width: 768px) {
+    .hero-content { padding: 20px; }
+    header { flex-direction: column; gap: 10px; align-items:flex-start; }
+    nav ul { flex-direction: column; align-items: flex-start; }
+  }

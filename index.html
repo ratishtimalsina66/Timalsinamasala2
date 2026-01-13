@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timalsina Masala Pasal</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* page-specific tweaks */
+    .hero {
+      background: url('wholespices.png') no-repeat center center;
+      background-size: cover;
+      width: 100vw;
+      margin-left: calc(-50vw + 50%);
+      margin-right: calc(-50vw + 50%);
+      padding: 120px 20px;
+      text-align: center;
+      position: relative;
+      color: white;
+    }
+
+    .hero-content {
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 40px 20px;
+      border-radius: 12px;
+      display: inline-block;
+      max-width: 800px;
+    }
+
+    .hero h1 {
+      font-size: 2.8rem;
+      color: #f2c94c;
+      font-family: 'Georgia', serif;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      color: #fff;
+      margin: 0 auto;
+      max-width: 600px;
+    }
+
+    /* header cart badge */
+    .cart-badge {
+      background: rgba(0,0,0,0.15);
+      padding: 4px 10px;
+      border-radius: 20px;
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      color: #fff;
+      font-weight:600;
+    }
+
+    .last-order {
+      max-width: 1000px;
+      margin: 20px auto;
+      padding: 16px;
+      background: rgba(255,255,255,0.95);
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      display: none;
+    }
+
+    .last-order.visible { display:block; }
+
+    .last-order .meta { color:#666; font-size:0.95rem; margin-top:6px; }
+    .last-order .actions { margin-top:12px; display:flex; gap:8px; }
+    .btn-clear { background:#b64323;color:white;border:none;padding:8px 12px;border-radius:6px; cursor:pointer; }
+    .btn-view { background:#3e7d16;color:white;border:none;padding:8px 12px;border-radius:6px; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Timalsina <span>MASALA</span></div>
+    <nav>
+      <ul>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#products">Products</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="shop.html" class="cart-badge" title="View cart">Cart (<span id="cart-count">0</span>)</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Pure Spices from Timalsina Masala Pasal</h1>
+      <p>Authentic, machine-ground spices straight from the source – delivering purity and tradition to every Nepali and Indian kitchen.</p>
+    </div>
+  </section>
+
+  <section id="about">
+    <h2>About Us</h2>
+    <p>At Timalsina Masala Pasal, we process raw spices using our own machines to ensure 100% purity and freshness. No chemicals, no compromises – just real flavor for your family meals.</p>
+  </section>
+
+  <section id="products">
+    <h2>Our Products</h2>
+    <div class="product-grid">
+      <div class="product-card">
+        <h3>Jeera Powder</h3>
+        <p>Cumin powder made from high-quality seeds.</p>
+      </div>
+      <div class="product-card">
+        <h3>Dhaniya Powder</h3>
+        <p>Ground coriander with fresh, natural aroma.</p>
+      </div>
+      <div class="product-card">
+        <h3>Chilly Powder</h3>
+        <p>Bright red and spicy, made from handpicked chilies.</p>
+      </div>
+      <div class="product-card">
+        <h3>Haldi (Turmeric)</h3>
+        <p>Sun-dried and ground turmeric – pure and powerful.</p>
+      </div>
+      <div class="product-card">
+        <h3>Black Pepper</h3>
+        <p>Strong, aromatic, freshly ground black pepper.</p>
+      </div>
+      <div class="product-card">
+        <h3>Special Masala</h3>
+        <p>Our special blend – perfect for daily use in Nepali cuisine.</p>
+      </div>
+    </div>
+  </section>
+
+  <div id="last-order" class="last-order" aria-live="polite">
+    <!-- populated by script -->
+  </div>
+
+  <section id="contact">
+    <h2>Contact Us</h2>
+    <p><strong>Location:</strong> Dillibazar, Ghattekulo, Kathmandu</p>
+    <p><strong>Phone:</strong> 014435608</p>
+    <p><strong>Mobile:</strong> 9841303805</p>
+    <p><strong>Email:</strong> timalsina.r@gmail.com</p>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Timalsina Masala Pasal. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Keep the header cart count in sync with shop/checkout pages (localStorage key: 'cart')
+    function loadCart() {
+      try { return JSON.parse(localStorage.getItem('cart') || '[]'); } catch (e) { return []; }
+    }
+    function updateCartCount() {
+      const cart = loadCart();
+      const count = cart.reduce((s, i) => s + (i.qty || 0), 0);
+      const el = document.getElementById('cart-count');
+      if (el) el.textContent = count;
+    }
+
+    // Render last order summary (saved by checkout.js as 'lastOrder' in localStorage)
+    function renderLastOrder() {
+      const el = document.getElementById('last-order');
+      if (!el) return;
+      const raw = localStorage.getItem('lastOrder');
+      if (!raw) {
+        el.classList.remove('visible');
+        el.innerHTML = '';
+        return;
+      }
+      let order;
+      try {
+        order = JSON.parse(raw);
+      } catch (e) {
+        el.classList.remove('visible');
+        el.innerHTML = '';
+        return;
+      }
+      const created = new Date(order.created_at).toLocaleString();
+      const itemsHtml = (order.items || []).map(it => `<li>${it.name} × ${it.qty} — $${(it.price*it.qty).toFixed(2)}</li>`).join('');
+      el.innerHTML = `
+        <h3>Last Order</h3>
+        <div><strong>Order ID:</strong> ${order.id}</div>
+        <div class="meta"><strong>Placed:</strong> ${created}</div>
+        <div class="meta"><strong>Total:</strong> $${order.total}</div>
+        <ul style="margin-top:8px;padding-left:18px;">${itemsHtml}</ul>
+        <div class="actions">
+          <button class="btn-view" id="continue-shopping">Continue Shopping</button>
+          <button class="btn-clear" id="clear-order">Clear Last Order</button>
+        </div>
+      `;
+      el.classList.add('visible');
+
+      document.getElementById('clear-order').addEventListener('click', () => {
+        localStorage.removeItem('lastOrder');
+        renderLastOrder();
+      });
+      document.getElementById('continue-shopping').addEventListener('click', () => {
+        window.location.href = 'shop.html';
+      });
+    }
+
+    // update on load and on localStorage changes (so all pages stay in sync)
+    updateCartCount();
+    renderLastOrder();
+    window.addEventListener('storage', () => {
+      updateCartCount();
+      renderLastOrder();
+    });
+
+    // Also update count periodically in case some browsers don't fire storage for same-tab changes
+    setInterval(updateCartCount, 800);
+  </script>
+</body>
+</html>
